@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scutum/data/models/task_model.dart';
 import 'package:scutum/data/repo/task_repo.dart';
 
+enum TaskFilter { all, completed, notCompleted }
+
 /// - Events -
 abstract class TaskEvent {}
 
@@ -23,8 +25,8 @@ class ToggleTask extends TaskEvent {
 }
 
 class FilterTasks extends TaskEvent {
-  final bool? showCompletedOnly; // null = show all
-  FilterTasks({this.showCompletedOnly});
+  final TaskFilter filter;
+  FilterTasks(this.filter);
 }
 
 /// - States -
@@ -35,12 +37,12 @@ class TaskLoading extends TaskState {}
 class TaskLoaded extends TaskState {
   final List<TaskModel> allTasks; // Keeping the full list in memory
   final List<TaskModel> filteredTasks; // Showed list
-  final bool? activeFilter; // Current filter setting
+  final TaskFilter activeFilter; // Current filter setting
 
   TaskLoaded({
     required this.allTasks,
     required this.filteredTasks,
-    this.activeFilter,
+    this.activeFilter = TaskFilter.all,
   });
 }
 
@@ -60,8 +62,20 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   void _onLoadTasks(LoadTasks event, Emitter<TaskState> emit) {
     // Load from SharedPreferences
     final tasks = repo.getTasks();
+    final TaskFilter currentFilter = state is TaskLoaded
+        ? (state as TaskLoaded).activeFilter
+        : TaskFilter.all;
+
+    final filtered = _applyFilter(tasks, currentFilter);
+
     // Emit loaded state showing all tasks
-    emit(TaskLoaded(allTasks: tasks, filteredTasks: tasks));
+    emit(
+      TaskLoaded(
+        allTasks: tasks,
+        filteredTasks: filtered,
+        activeFilter: currentFilter,
+      ),
+    );
   }
 
   // Handler for adding task
@@ -89,24 +103,28 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final currentState = state as TaskLoaded;
       final source = currentState.allTasks; // Always filtering from source
 
-      List<TaskModel> filtered;
-
-      if (event.showCompletedOnly == true) {
-        filtered = source.where((t) => t.isCompleted).toList();
-      } else if (event.showCompletedOnly == false) {
-        filtered = source.where((t) => !t.isCompleted).toList();
-      } else {
-        filtered = source; // Showing all
-      }
+      final filtered = _applyFilter(source, event.filter);
 
       // Emit new state with filtered list
       emit(
         TaskLoaded(
           allTasks: source,
           filteredTasks: filtered,
-          activeFilter: event.showCompletedOnly,
+          activeFilter: event.filter,
         ),
       );
+    }
+  }
+
+  // additional method for filtering
+  List<TaskModel> _applyFilter(List<TaskModel> tasks, TaskFilter filter) {
+    switch (filter) {
+      case TaskFilter.completed:
+        return tasks.where((t) => t.isCompleted).toList();
+      case TaskFilter.notCompleted:
+        return tasks.where((t) => !t.isCompleted).toList();
+      case TaskFilter.all:
+        return tasks;
     }
   }
 }

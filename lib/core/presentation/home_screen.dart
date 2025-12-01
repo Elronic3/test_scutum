@@ -19,17 +19,26 @@ class HomeScreen extends StatelessWidget {
         title: const Text('To-Do & Weather'),
         actions: [
           // FilterButton
-          PopupMenuButton<bool?>(
+          PopupMenuButton<TaskFilter>(
             icon: const Icon(Icons.filter_list),
-            onSelected: (value) {
+            onSelected: (filter) {
               context.read<TaskBloc>().add(
-                FilterTasks(showCompletedOnly: value),
+                FilterTasks(filter),
               );
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(value: null, child: Text('Show All')),
-              const PopupMenuItem(value: true, child: Text('Completed Only')),
-              const PopupMenuItem(value: false, child: Text('Completed Only')),
+              const PopupMenuItem(
+                value: TaskFilter.all,
+                child: Text('Show All'),
+              ),
+              const PopupMenuItem(
+                value: TaskFilter.completed,
+                child: Text('Completed'),
+              ),
+              const PopupMenuItem(
+                value: TaskFilter.notCompleted,
+                child: Text('Not completed'),
+              ),
             ],
           ),
         ],
