@@ -1,16 +1,53 @@
-# scutum
+# Scutum To-Do & Weather Manager (Flutter/BLoC)
 
-A new Flutter project.
+Цей застосунок є тестовим проектом з використанням патерну BLoC для управління станом.
+Проект поєднує функціонал списку завдань із локальним сховищем (shared_preferences) та відображенням даних про погоду, отриманих із зовнішнього API (OpenWeatherMap).
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+# Ключові технології та архітектура
+Фреймворк: Flutter
 
-A few resources to get you started if this is your first Flutter project:
+Мова: Dart
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Управління станом: BLoC (з пакетом flutter_bloc)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Мережа: http (обрано через мінімалізм та нативність)
+
+Локальне сховище: shared_preferences
+
+Архітектура: Presentation, BLoC, Data Access
+
+
+# Налаштування та запуск
+### 1. Клонування репозиторію
+```bash
+git clone [ВАШ_РЕПОЗИТОРІЙ_GIT]
+cd [НАЗВА_ПРОЕКТУ]
+flutter pub get
+```
+
+### 2. (Обов'язково) Для забезпечення безпеки, API ключ OpenWeatherMap винесений в окремий файл, який ігнорується системою контролю версій Git.
+Створіть файл env.dart в папці lib/core/constants (це той файл, який ігнорується Git).
+Відкрийте env.dart та вставте ваш реальний ключ OpenWeatherMap:
+```dart
+// lib/core/constants/env.dart
+const String openWeatherApiKey = 'ВАШ_СПРАВЖНІЙ_СЕКРЕТНИЙ_КЛЮЧ';
+```
+
+
+# Особливості:
+Відображення погоди за містом, встановленим у константах lib/core/constants/app_constants.dart (defaultCity).
+Збереження завдань у локальній пам'яті пристрою.
+Фільтрація завдань (всі, виконані, не виконані).
+Видалення завдань свайпом.
+
+
+# P.s.
+
+Обгрунтуйте вибір бібліотеки для роботи з мережею:
+Використовував бібліотеку http, тому що для даного проекту є ідеальним варіантом, який не збільшує значно вагу програми, є офіційним пакетом dart та простим у використанні.
+
+Логіка використання OpenWeatherMap Api:
+Використовується http для отримання даних з OpenWeather (JSON формат), dart:convert перетворює JSON на Map (String), після чого створюється об'єкт WeatherModel.
+
+
