@@ -1,5 +1,5 @@
 import 'dart:convert'; // jsonDecode
-import 'package:http/http.dart' as http; // network connect
+import 'package:http/http.dart' as http; // network connect 
 import 'package:scutum/core/constants/app_constants.dart';
 import 'package:scutum/data/models/weather_model.dart';
 
