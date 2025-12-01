@@ -1,16 +1,9 @@
 # scutum
 
-A new Flutter project.
+Обгрунтуйте вибір бібліотеки для роботи з мережею:
+Використовував бібліотеку http, тому що для даного проекту є ідеальним варіантом, який не збільшує значно вагу програми, є офіційним пакетом dart та простим у використанні.
 
-## Getting Started
+Логіка використання OpenWeatherMap Api:
+Використовується http для отримання даних з OpenWeather (JSON формат), dart:convert перетворює JSON на Map (String), після чого створюється об'єкт WeatherModel.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
